@@ -445,7 +445,7 @@ if (sessionStorage.getItem('vauth') === '1') {
 
 <script>
 // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
-const SHEET_ID = 'TU_SHEET_ID_AQUI';
+const SHEET_ID = '1CJK919njUXRonAxlaT2WNYTc1zf8YkjjQvjgmzVih4Q';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=`;
 
 // ─── DATOS DEMO ───────────────────────────────────────────────────────────────
@@ -650,7 +650,7 @@ function renderCompC() {
 
 // ─── CARGA DESDE SHEET ────────────────────────────────────────────────────────
 async function loadFromSheet() {
-  if (SHEET_ID === '1CJK919njUXRonAxlaT2WNYTc1zf8YkjjQvjgmzVih4Q') { renderAll(); return; }
+  if (SHEET_ID === 'TU_SHEET_ID_AQUI') { renderAll(); return; }
   try {
     const fetchSheet = async (sheet) => {
       const res = await fetch(BASE + encodeURIComponent(sheet));
