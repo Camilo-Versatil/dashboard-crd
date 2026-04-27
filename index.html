@@ -445,7 +445,7 @@ if (sessionStorage.getItem('vauth') === '1') {
 
 <script>
 // ─── CONFIGURACIÓN ────────────────────────────────────────────────────────────
-const SHEET_ID = '1CJK919njUXRonAxlaT2WNYTc1zf8YkjjQvjgmzVih4Q';
+const SHEET_ID = 'TU_SHEET_ID_AQUI';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=`;
 
 // ─── DATOS DEMO ───────────────────────────────────────────────────────────────
@@ -650,7 +650,7 @@ function renderCompC() {
 
 // ─── CARGA DESDE SHEET ────────────────────────────────────────────────────────
 async function loadFromSheet() {
-  if (SHEET_ID === 'TU_SHEET_ID_AQUI') { renderAll(); return; }
+  if (SHEET_ID === '1CJK919njUXRonAxlaT2WNYTc1zf8YkjjQvjgmzVih4Q') { renderAll(); return; }
   try {
     const fetchSheet = async (sheet) => {
       const res = await fetch(BASE + encodeURIComponent(sheet));
@@ -702,7 +702,22 @@ async function loadFromSheet() {
     // Config
     const rowsCfg = await fetchSheet('Config');
     const updRow = rowsCfg.find(r => r.c[0]?.v === 'ultima_actualizacion');
-    if (updRow) DATA.ultima_actualizacion = updRow.c[1]?.v||'—';
+    if (updRow) {
+      const raw = updRow.c[1]?.v || '—';
+      // Google Sheets returns dates as "Date(yyyy,m,d)" — convert to readable
+      if (typeof raw === 'string' && raw.startsWith('Date(')) {
+        const parts = raw.replace('Date(','').replace(')','').split(',');
+        const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const d = parseInt(parts[2]);
+        const m = parseInt(parts[1]);
+        const y = parseInt(parts[0]);
+        DATA.ultima_actualizacion = d + ' ' + months[m] + ' ' + y;
+      } else if (raw && raw.f) {
+        DATA.ultima_actualizacion = raw.f;
+      } else {
+        DATA.ultima_actualizacion = raw;
+      }
+    }
     const fichaRow = rowsCfg.find(r => r.c[0]?.v === 'ficha_org_nueva');
     if (fichaRow) DATA.ficha_org_nueva = fichaRow.c[1]?.v||'';
 
